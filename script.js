@@ -962,6 +962,10 @@ function showSupplySelectionModal(supplies) {
             ${supplies.map((supply, index) => `
               <button class="supply-item" data-supply-index="${index}">
                 <strong>${supply.cups}</strong> (${supply.addressInfo || supply.address || 'Sin dirección'})
+                <span class="supply-validity">
+                  <span class="supply-validity-label">Vigencia:</span>
+                  ${formatSupplyValidity(supply.validDateFrom, supply.validDateTo)}
+                </span>
               </button>
             `).join('')}
           </div>
@@ -989,6 +993,51 @@ function showSupplySelectionModal(supplies) {
       });
     });
   });
+}
+
+/**
+ * Format a supply validity interval for display in the selection modal.
+ * An empty end date means that the supply is currently active.
+ * @param {string} validDateFrom - Start date in YYYY/MM/DD format
+ * @param {string} validDateTo - End date in YYYY/MM/DD format
+ * @returns {string} Formatted validity interval
+ */
+function formatSupplyValidity(validDateFrom, validDateTo) {
+  const formattedFrom = formatSupplyDate(validDateFrom);
+  const formattedTo = formatSupplyDate(validDateTo);
+
+  if (!formattedFrom && !formattedTo) {
+    return 'Fechas no disponibles';
+  }
+
+  if (!formattedTo) {
+    return formattedFrom
+      ? `Desde ${formattedFrom} (suministro actual)`
+      : 'Suministro actual (fecha de inicio no disponible)';
+  }
+
+  return formattedFrom
+    ? `Desde ${formattedFrom} hasta ${formattedTo}`
+    : `Hasta ${formattedTo}`;
+}
+
+/**
+ * Format an API date in YYYY/MM/DD format as DD/MM/YYYY.
+ * @param {string} value - Date returned by the API
+ * @returns {string} Formatted date or an empty string
+ */
+function formatSupplyDate(value) {
+  if (typeof value !== 'string' || value.trim() === '') {
+    return '';
+  }
+
+  const parts = value.split('/');
+  if (parts.length !== 3 || parts.some(part => !/^\d+$/.test(part))) {
+    return value;
+  }
+
+  const [year, month, day] = parts;
+  return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
 }
 
 /**
@@ -1332,5 +1381,7 @@ export {
   getCache,
   setCache,
   createConsumptionCacheKey,
-  createContractCacheKey
+  createContractCacheKey,
+  formatSupplyDate,
+  formatSupplyValidity
 };

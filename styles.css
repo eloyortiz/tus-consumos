@@ -669,6 +669,18 @@ h1, h2, h3, h4, h5, h6 {
     color: #333;
 }
 
+.supply-validity {
+    display: block;
+    color: #666;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.supply-validity-label {
+    font-weight: 600;
+    color: #555;
+}
+
 /* =======================================
    LOADING SPINNER
    ======================================= */

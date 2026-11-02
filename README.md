@@ -60,7 +60,7 @@ Please, remember to follow the License rules below.
 
 3. Run the server
 	```bash
-   http-server
+   npm start
    ```
 
 ## Mock Server
